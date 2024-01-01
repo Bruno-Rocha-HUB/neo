@@ -37,7 +37,7 @@ class RestPasswordPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Sua logo aqui
-                Image.asset('caminho/para/sua/logo.png', height: 120, width: 120),
+                Image.asset('assets/Cadeado.gif', height: 120, width: 120),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,

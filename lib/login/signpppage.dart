@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:neo/login/loginpage.dart'; // Importe a LoginPage
+
+import 'loginpage.dart';
 
 class SignUpPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -56,7 +57,7 @@ class SignUpPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Sua logo aqui
-                Image.asset('assets/ic_launcher.png', height: 120, width: 120),
+                Image.asset('assets/Logo.gif', height: 120, width: 120),
                 SizedBox(height: 20), // Ajuste conforme necessário
                 TextFormField(
                   controller: _emailController,

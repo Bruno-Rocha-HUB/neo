@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:neo/splashcreen.dart';
+
+import 'splashcreen.dart';
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

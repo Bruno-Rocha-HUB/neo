@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:neo/login/restpassaword.dart';
-
-
 import '../core/money.dart';
+import 'restpassaword.dart';
 import 'signpppage.dart'; // Importe a página inicial
 
 class AuthService {
@@ -33,10 +31,12 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isSigningIn = false;
+  String? _errorMessage;
 
   Future<void> _signInWithEmailAndPassword() async {
     setState(() {
       _isSigningIn = true;
+      _errorMessage = null; // Limpa a mensagem de erro ao tentar fazer login novamente.
     });
 
     try {
@@ -55,6 +55,9 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseAuthException catch (e) {
       // Handle errors aqui, por exemplo, exibindo uma mensagem de erro ao usuário
       print('Erro de autenticação: $e');
+      setState(() {
+        _errorMessage = 'Credenciais inválidas. Tente novamente.';
+      });
     } finally {
       setState(() {
         _isSigningIn = false;
@@ -106,6 +109,15 @@ class _LoginPageState extends State<LoginPage> {
                     border: OutlineInputBorder(),
                   ),
                 ),
+
+                SizedBox(height: 16),
+
+                // Exibe a mensagem de erro se houver uma
+                if (_errorMessage != null)
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(color: Colors.red),
+                  ),
 
                 SizedBox(height: 16),
 
