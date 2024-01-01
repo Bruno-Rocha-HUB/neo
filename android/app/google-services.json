@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "91749336280",
+    "project_id": "neo-f8c12",
+    "storage_bucket": "neo-f8c12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91749336280:android:cb5f84e2d8b1671bb603ad",
+        "android_client_info": {
+          "package_name": "com.example.neo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzynImmNGQXjbqPuCNN_dk0jk8Kedwh9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
