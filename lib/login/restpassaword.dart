@@ -27,7 +27,7 @@ class RestPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Esqueci a Senha'),
+        title: const Text('Esqueci a Senha'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -38,35 +38,35 @@ class RestPasswordPage extends StatelessWidget {
               children: [
                 // Sua logo aqui
                 Image.asset('assets/Cadeado.gif', height: 120, width: 120),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'E-mail',
                     prefixIcon: Icon(Icons.email, color: Colors.blue),
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isResettingPassword ? null : _resetPassword,
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Redefinir Senha',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context); // Voltar à tela de login
                   },
-                  child: Text(
+                  child: const Text(
                     'Voltar ao Login',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
                   ),

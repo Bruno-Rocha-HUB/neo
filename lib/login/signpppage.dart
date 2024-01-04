@@ -47,7 +47,7 @@ class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastro'),
+        title: const Text('Cadastro'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -58,44 +58,44 @@ class SignUpPage extends StatelessWidget {
               children: [
                 // Sua logo aqui
                 Image.asset('assets/Logo.gif', height: 120, width: 120),
-                SizedBox(height: 20), // Ajuste conforme necessário
+                const SizedBox(height: 20), // Ajuste conforme necessário
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'E-mail',
                     prefixIcon: Icon(Icons.email, color: Colors.blue),
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Senha',
                     prefixIcon: Icon(Icons.lock, color: Colors.blue),
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Confirmar Senha',
                     prefixIcon: Icon(Icons.lock, color: Colors.blue),
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isCreatingAccount ? null : () => _createAccount(context),
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Cadastrar',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),

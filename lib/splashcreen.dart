@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Adicione um temporizador para aguardar alguns segundos antes de navegar para a página de login
     Timer(
-      Duration(seconds: 2),
+      const Duration(seconds: 5),
           () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(

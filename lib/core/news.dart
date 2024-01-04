@@ -1,9 +1,10 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:neo/core/calculator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'calculator.dart';
 import 'destaque.dart';
 import 'money.dart';
 import 'stock.dart';
@@ -17,6 +18,7 @@ class _NewsPageState extends State<NewsPage> {
   String apiKey = '12dea2fb07c94f81abea63fcc63b45c6';
   String selectedCategory = 'business';
   List<Article> articles = [];
+  int _currentIndex = 2; // Defina o índice inicial como 2 para a página de notícias
 
   @override
   void initState() {
@@ -24,11 +26,36 @@ class _NewsPageState extends State<NewsPage> {
     fetchNews();
   }
 
+  Future<List<Article>> getCachedNews() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.containsKey('cachedNews')) {
+      String cachedData = prefs.getString('cachedNews') ?? '';
+      List<dynamic> cachedNewsData = json.decode(cachedData);
+      return cachedNewsData.map((article) => Article.fromJson(article)).toList();
+    }
+
+    return [];
+  }
+
+  Future<void> saveToCache(List<Article> articles) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String dataToCache = json.encode(articles.map((article) => article.toJson()).toList());
+    prefs.setString('cachedNews', dataToCache);
+  }
+
   Future<void> fetchNews() async {
     String url =
         'https://newsapi.org/v2/top-headlines?country=br&category=$selectedCategory&apiKey=$apiKey';
 
     try {
+      List<Article> cachedNews = await getCachedNews();
+      if (cachedNews.isNotEmpty) {
+        setState(() {
+          articles = cachedNews;
+        });
+      }
+
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -36,10 +63,10 @@ class _NewsPageState extends State<NewsPage> {
         if (data['status'] == 'ok') {
           List<dynamic> articlesData = data['articles'];
           setState(() {
-            articles = articlesData
-                .map((article) => Article.fromJson(article))
-                .toList();
+            articles = articlesData.map((article) => Article.fromJson(article)).toList();
           });
+
+          saveToCache(articles);
         }
       } else {
         throw Exception('Failed to load news');
@@ -53,16 +80,28 @@ class _NewsPageState extends State<NewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/ic_launcher.png',
-              height: 40,
-            ),
-            SizedBox(width: 8),
-            Text('Notícias'),
-          ],
+        elevation: 0,
+        backgroundColor: Colors.blue,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
         ),
+
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/ic_launcher.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
+        title: const Text(
+          'Noticias',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
+        ),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -81,7 +120,7 @@ class _NewsPageState extends State<NewsPage> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Text(
                         'Destaques',
                         style: TextStyle(
@@ -101,7 +140,7 @@ class _NewsPageState extends State<NewsPage> {
                       });
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Text(
                         categories[index],
                         style: TextStyle(
@@ -126,7 +165,7 @@ class _NewsPageState extends State<NewsPage> {
             style: ElevatedButton.styleFrom(
               primary: Colors.lightBlueAccent,
             ),
-            child: SizedBox(
+            child: const SizedBox(
               width: double.infinity,
               child: Center(
                 child: Row(
@@ -149,7 +188,7 @@ class _NewsPageState extends State<NewsPage> {
               itemBuilder: (context, index) {
                 return Card(
                   elevation: 4,
-                  margin: EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
                   child: ListTile(
                     title: Text(articles[index].title),
                     subtitle: Text(articles[index].description),
@@ -163,49 +202,53 @@ class _NewsPageState extends State<NewsPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.compare_arrows_sharp, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CurrencyConversionPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.candlestick_chart_sharp, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => StockInfoPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.calculate, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CalculatorPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.article, color: Colors.blue),
-              onPressed: () {
-                // Lógica para navegar para a tela de notícias
-              },
-            ),
-          ],
-        ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        icons: [
+          Icons.compare_arrows_sharp,
+          Icons.candlestick_chart_sharp,
+          Icons.calculate,
+          Icons.article
+        ],
+        activeIndex: 3,
+        gapLocation: GapLocation.none,
+        notchSmoothness: NotchSmoothness.smoothEdge,
+        leftCornerRadius: 32,
+        rightCornerRadius: 32,
+        backgroundColor: Colors.blue, // Cor de fundo da AppBar inferior
+        activeColor: Colors.white, // Cor do ícone ativo
+        inactiveColor: Colors.white.withOpacity(0.6), // Cor dos ícones inativos
+        onTap: (index) {
+          _navigateToScreen(index, context);
+          setState(() => _currentIndex = index);
+        },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  void _navigateToScreen(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CurrencyConversionPage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const StockInfoPage()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CalculatorPage()),
+        );
+        break;
+      case 3:
+      // Não é necessário navegar para a própria página de notícias
+        break;
+    }
   }
 
   void _launchURL(String url) async {
@@ -234,6 +277,14 @@ class Article {
       description: json['description'] ?? '',
       url: json['url'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'url': url,
+    };
   }
 }
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'calculator.dart';
@@ -20,6 +21,7 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
   late Map<String, double> _taxasDeCambio = {};
   List<String> _historicoConversoes = [];
   final TextEditingController _controladorQuantidade = TextEditingController();
+  int _currentIndex = 0;
 
   // Mapa de bandeiras diretamente no código
   Map<String, String> _bandeiras = {
@@ -124,35 +126,46 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
+          elevation: 0,
+          backgroundColor: Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
+
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
               'assets/ic_launcher.png',
+              width: 40,
               height: 40,
             ),
-            SizedBox(width: 8),
-            Text('Conversor de Moeda'),
-          ],
-        ),
-        centerTitle: true,
+          ),
+          title: Text(
+            'Conversor de Moedas',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
+          ),
+          centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 16),
             Image.asset(
               'assets/Logo.gif',
               width: 150,
               height: 150,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _controladorQuantidade,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Valor em $_moedaOrigem',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
               onChanged: (valor) {
                 setState(() {
@@ -160,7 +173,7 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
                 });
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -169,7 +182,7 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
                     _moedaOrigem = valor!;
                   });
                 }),
-                Icon(Icons.compare_arrows, size: 30, color: Colors.blue),
+                const Icon(Icons.compare_arrows, size: 30, color: Colors.blue),
                 _buildDropdownButtonWithFlag(_moedaAlvo, (String? valor) {
                   setState(() {
                     _moedaAlvo = valor!;
@@ -177,7 +190,7 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
                 }),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 final quantidadeConvertida = _converterMoeda(
@@ -196,34 +209,34 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
                 _adicionarConversaoAoHistorico(mensagem);
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              child: SizedBox(
+              child: const SizedBox(
                 width: double.infinity,
                 child: Center(
                   child: Text(
                     'Converter',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             if (_historicoConversoes.isNotEmpty)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    child: Text(
+                    child: const Text(
                       'Histórico de Conversões:',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Column(
                     children: _historicoConversoes.reversed.map((conversao) {
                       return Container(
@@ -237,55 +250,33 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.compare_arrows_sharp, color: Colors.blue),
-              onPressed: () {
-                // Adicione lógica para navegar para a tela de conversão de moeda
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.candlestick_chart_sharp, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => StockInfoPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.calculate, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CalculatorPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.article, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewsPage()),
-                );
-              },
-            ),
-          ],
-        ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        icons: [
+          Icons.compare_arrows_sharp,
+          Icons.candlestick_chart_sharp,
+          Icons.calculate,
+          Icons.article
+        ],
+        activeIndex: 0, // Defina o índice ativo
+        gapLocation: GapLocation.none,
+        notchSmoothness: NotchSmoothness.smoothEdge,
+        leftCornerRadius: 32,
+        rightCornerRadius: 32,
+        backgroundColor: Colors.blue, // Cor de fundo da AppBar inferior
+        activeColor: Colors.white, // Cor do ícone ativo
+        inactiveColor: Colors.white.withOpacity(0.6), // Cor dos ícones inativos
+        onTap: (index) {
+          _navigateToScreen(index, context);
+          setState(() => _currentIndex = index);
+        },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
   Widget _buildDropdownButtonWithFlag(String value, void Function(String?) onChanged) {
     return Container(
       width: 120,
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.blue),
@@ -293,7 +284,7 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
       child: DropdownButton<String>(
         value: value,
         underline: Container(),
-        icon: Icon(Icons.arrow_drop_down),
+        icon: const Icon(Icons.arrow_drop_down),
         items: _bandeiras.keys.map((String moeda) {
           return DropdownMenuItem<String>(
             value: moeda,
@@ -312,7 +303,7 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
                     ),
                   ),
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 Text(moeda),
               ],
             ),
@@ -321,5 +312,34 @@ class _CurrencyConversionPageState extends State<CurrencyConversionPage> {
         onChanged: onChanged,
       ),
     );
+  }
+
+  void _navigateToScreen(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+      // Não é necessário navegar para a própria página
+        break;
+      case 1:
+      // Navegar para a tela de informações de ações
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => StockInfoPage()),
+        );
+        break;
+      case 2:
+      // Navegar para a calculadora
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CalculatorPage()),
+        );
+        break;
+      case 3:
+      // Navegar para a tela de notícias
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NewsPage()),
+        );
+        break;
+    }
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import 'calculator.dart';
+import 'package:neo/core/calculator.dart';
 import 'money.dart';
 import 'news.dart';
 
@@ -96,20 +96,31 @@ class _StockInfoPageState extends State<StockInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/ic_launcher.png',
-              height: 40,
-            ),
-            SizedBox(width: 8),
-            Text('Informações de Ações'),
-          ],
+        elevation: 0,
+        backgroundColor: Colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+        ),
+
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/ic_launcher.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
+        title: Text(
+          'Informações da Ação',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
         ),
         centerTitle: true,
       ),
       body: _carregando
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -120,15 +131,15 @@ class _StockInfoPageState extends State<StockInfoPage> {
               width: 150,
               height: 150,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _controladorAcao,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Buscar Ação',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -137,13 +148,13 @@ class _StockInfoPageState extends State<StockInfoPage> {
                 _buscarDadosAcao();
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15), // Ajuste o valor conforme necessário
                 ),
                 //primary: Colors.blue, // Cor de fundo do botão
               ),
-              child: SizedBox(
+              child: const SizedBox(
                 width: double.infinity,
                 child: Center(
                   child: Text(
@@ -153,7 +164,7 @@ class _StockInfoPageState extends State<StockInfoPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             if (_precoAberto != null)
               Card(
                 elevation: 5,
@@ -163,17 +174,17 @@ class _StockInfoPageState extends State<StockInfoPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Preço de Mercado Aberto: USD\$${_precoAberto!.toStringAsFixed(2)}'),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text('Variação desde o Fechamento: USD\$${_precoFechado!.toStringAsFixed(2)}'),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text('Variação durante a Semana: $_precoSemana%'),
-                      SizedBox(height: 16),
-                      Text('Informações da Empresa (em inglês):'),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 16),
+                      const Text('Informações da Empresa (em inglês):'),
+                      const SizedBox(height: 8),
                       Text(_informacoesEmpresa!),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text('Setor: $_setor'),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text('Classificação: $_classificacao'),
                     ],
                   ),
@@ -182,47 +193,52 @@ class _StockInfoPageState extends State<StockInfoPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.compare_arrows_sharp, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CurrencyConversionPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.candlestick_chart_sharp, color: Colors.blue),
-              onPressed: () {
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.calculate, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CalculatorPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.article, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewsPage()),
-                );
-              },
-            ),
-          ],
-        ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        icons: [
+          Icons.compare_arrows_sharp,
+          Icons.candlestick_chart_sharp,
+          Icons.calculate,
+          Icons.article
+        ],
+        activeIndex: 1, // Defina o índice ativo como 2 para a Calculadora
+        gapLocation: GapLocation.none,
+        notchSmoothness: NotchSmoothness.smoothEdge,
+        leftCornerRadius: 32,
+        rightCornerRadius: 32,
+        backgroundColor: Colors.blue, // Cor de fundo da AppBar inferior
+        activeColor: Colors.white, // Cor do ícone ativo
+        inactiveColor: Colors.white.withOpacity(0.6), // Cor dos ícones inativos
+        onTap: (index) {
+          _navigateToScreen(index, context);
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  void _navigateToScreen(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CurrencyConversionPage()),
+        );
+        break;
+      case 1:
+      // Não é necessário navegar para a própria página
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CalculatorPage()),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NewsPage()),
+        );
+        break;
+    }
   }
 }

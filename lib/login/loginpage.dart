@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
         // Se a autenticação for bem-sucedida, navegue para a página inicial
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CurrencyConversionPage()),
+          MaterialPageRoute(builder: (context) => const CurrencyConversionPage()),
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -77,49 +77,49 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 // Logo
                 Image.asset(
-                  'assets/ic_launcher.png',
+                  'assets/Logo.gif',
                   height: 120,
                   width: 120,
                   fit: BoxFit.contain,
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 // Campo de E-mail
                 TextFormField(
                   controller: _emailController,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  decoration: const InputDecoration(
                     labelText: 'E-mail',
                     prefixIcon: Icon(Icons.email, color: Colors.blue),
                     border: OutlineInputBorder(),
                   ),
                 ),
 
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
 
                 // Campo de Senha
                 TextFormField(
                   controller: _passwordController,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Senha',
                     prefixIcon: Icon(Icons.lock, color: Colors.blue),
                     border: OutlineInputBorder(),
                   ),
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Exibe a mensagem de erro se houver uma
                 if (_errorMessage != null)
                   Text(
                     _errorMessage!,
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Botão de Entrar ocupando linha inteira
                 SizedBox(
@@ -127,16 +127,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: _isSigningIn ? null : _signInWithEmailAndPassword,
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Entrar',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 // Texto para navegar para a página de cadastro
                 TextButton(
@@ -146,13 +146,13 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => SignUpPage()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Não tem uma conta? Cadastre-se',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
 
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 // Esqueci a senha
                 Align(
@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                       print('Esqueci a senha pressionado');
                     },
-                    child: Text(
+                    child: const Text(
                       'Esqueci a senha',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),
                     ),

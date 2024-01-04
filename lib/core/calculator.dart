@@ -3,6 +3,7 @@ import 'package:math_expressions/math_expressions.dart';
 import 'money.dart';
 import 'news.dart';
 import 'stock.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
 class CalculatorPage extends StatefulWidget {
   @override
@@ -16,15 +17,26 @@ class _CalculatorPageState extends State<CalculatorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/ic_launcher.png',
-              height: 40,
-            ),
-            SizedBox(width: 8),
-            Text('Calculadora'),
-          ],
+        elevation: 0,
+        backgroundColor: Colors.blue,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+        ),
+
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/ic_launcher.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
+        title: const Text(
+          'Calculadora',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),
         ),
         centerTitle: true,
       ),
@@ -35,9 +47,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
           children: [
             Text(
               input,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -74,17 +86,17 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 CalculatorButton('+', () => addToInput('+')),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: calculateResult,
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15), // Ajuste o valor conforme necessário
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                primary: Colors.lightBlueAccent, // Cor de fundo do botão
+                primary: Colors.lightBlueAccent,
               ),
-              child: SizedBox(
+              child: const SizedBox(
                 width: double.infinity,
                 child: Center(
                   child: Text(
@@ -97,46 +109,24 @@ class _CalculatorPageState extends State<CalculatorPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.compare_arrows_sharp, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CurrencyConversionPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.candlestick_chart_sharp, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => StockInfoPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.calculate, color: Colors.blue),
-              onPressed: () {
-                // Already on the calculator page
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.article, color: Colors.blue),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewsPage()),
-                );
-              },
-            ),
-          ],
-        ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        icons: [
+          Icons.compare_arrows_sharp,
+          Icons.candlestick_chart_sharp,
+          Icons.calculate,
+          Icons.article
+        ],
+        activeIndex: 2, // Defina o índice ativo como 2 para a Calculadora
+        gapLocation: GapLocation.none,
+        notchSmoothness: NotchSmoothness.smoothEdge,
+        leftCornerRadius: 32,
+        rightCornerRadius: 32,
+        backgroundColor: Colors.blue, // Cor de fundo da AppBar inferior
+        activeColor: Colors.white, // Cor do ícone ativo
+        inactiveColor: Colors.white.withOpacity(0.6), // Cor dos ícones inativos
+        onTap: (index) {
+          _navigateToScreen(index, context);
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -168,6 +158,32 @@ class _CalculatorPageState extends State<CalculatorPage> {
       // If there is an error in evaluating the expression, do nothing
     }
   }
+
+  void _navigateToScreen(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CurrencyConversionPage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const StockInfoPage()),
+        );
+        break;
+      case 2:
+      // Não é necessário navegar para a própria página
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NewsPage()),
+        );
+        break;
+    }
+  }
 }
 
 class CalculatorButton extends StatelessWidget {
@@ -179,15 +195,15 @@ class CalculatorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          minimumSize: Size(64, 64),
+          minimumSize: const Size(64, 64),
         ),
         child: Text(
           text,
-          style: TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 20),
         ),
       ),
     );
